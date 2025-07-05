@@ -31,8 +31,6 @@ class _NotesScreenContent extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Notes'),
-        backgroundColor: Colors.blue.shade600,
-        foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -46,84 +44,36 @@ class _NotesScreenContent extends StatelessWidget {
         listener: (context, state) {
           if (state is NotesError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red.shade600,
-              ),
+              SnackBar(content: Text(state.message)),
             );
-          } else if (state is NotesLoaded) {
-            // Show success message for operations
-            final previousState = context.read<NotesBloc>().state;
-            if (previousState is NoteOperationLoading) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Operation completed successfully!'),
-                  backgroundColor: Colors.green,
-                ),
-              );
-            }
           }
         },
         builder: (context, state) {
           if (state is NotesLoading) {
-            return const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
-                  Text('Loading your notes...'),
-                ],
-              ),
-            );
-          } else if (state is NotesLoaded) {
-            return _buildNotesList(context, state.notes);
-          } else if (state is NoteOperationLoading) {
-            return _buildNotesList(context, state.notes);
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is NotesLoaded || state is NoteOperationLoading) {
+            final notes = state is NotesLoaded ? state.notes : (state as NoteOperationLoading).notes;
+            return _buildNotesList(context, notes);
           } else if (state is NotesError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: Colors.red.shade300,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Error loading notes',
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    state.message,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey.shade600,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                  const Text('Error loading notes'),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () {
-                      context.read<NotesBloc>().add(FetchNotes());
-                    },
+                    onPressed: () => context.read<NotesBloc>().add(FetchNotes()),
                     child: const Text('Retry'),
                   ),
                 ],
               ),
             );
           }
-          
-          return const Center(
-            child: Text('Initializing...'),
-          );
+          return const Center(child: Text('Loading...'));
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddNoteDialog(context),
-        backgroundColor: Colors.blue.shade600,
-        foregroundColor: Colors.white,
         child: const Icon(Icons.add),
       ),
     );
@@ -131,30 +81,15 @@ class _NotesScreenContent extends StatelessWidget {
 
   Widget _buildNotesList(BuildContext context, List<Note> notes) {
     if (notes.isEmpty) {
-      return Center(
+      return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.note_alt_outlined,
-              size: 100,
-              color: Colors.grey.shade300,
-            ),
-            const SizedBox(height: 24),
+            Icon(Icons.note, size: 64, color: Colors.grey),
+            SizedBox(height: 16),
             Text(
               'Nothing here yet—tap ➕ to add a note.',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Colors.grey.shade500,
-                fontWeight: FontWeight.w500,
-              ),
               textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Signed in as: ${user?.email ?? 'Unknown'}',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey.shade400,
-              ),
             ),
           ],
         ),
@@ -162,7 +97,6 @@ class _NotesScreenContent extends StatelessWidget {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(vertical: 8),
       itemCount: notes.length,
       itemBuilder: (context, index) {
         final note = notes[index];
@@ -213,9 +147,7 @@ class _NotesScreenContent extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Note'),
-        content: Text(
-          'Are you sure you want to delete "${note.title.isEmpty ? 'Untitled' : note.title}"?',
-        ),
+        content: Text('Delete "${note.title.isEmpty ? 'Untitled' : note.title}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -226,7 +158,6 @@ class _NotesScreenContent extends StatelessWidget {
               Navigator.of(context).pop();
               context.read<NotesBloc>().add(DeleteNote(id: note.id));
             },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
             child: const Text('Delete'),
           ),
         ],
