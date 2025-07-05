@@ -4,7 +4,7 @@ import '../models/note.dart';
 class NoteDialog extends StatefulWidget {
   final Note? note;
 
-  const NoteDialog({Key? key, this.note}) : super(key: key);
+  const NoteDialog({super.key, this.note});
 
   @override
   State<NoteDialog> createState() => _NoteDialogState();

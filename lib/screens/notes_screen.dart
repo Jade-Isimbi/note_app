@@ -8,6 +8,8 @@ import '../widgets/note_card.dart';
 import '../widgets/note_dialog.dart';
 
 class NotesScreen extends StatelessWidget {
+  const NotesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
@@ -158,7 +160,6 @@ class _NotesScreenContent extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              print('Delete button pressed for note: ${note.id}');
               Navigator.of(dialogContext).pop();
               notesBloc.add(DeleteNote(id: note.id));
             },
