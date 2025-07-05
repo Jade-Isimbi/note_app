@@ -110,13 +110,14 @@ class _NotesScreenContent extends StatelessWidget {
   }
 
   void _showAddNoteDialog(BuildContext context) async {
+    final notesBloc = context.read<NotesBloc>();
     final result = await showDialog<Map<String, String>>(
       context: context,
-      builder: (context) => const NoteDialog(),
+      builder: (dialogContext) => const NoteDialog(),
     );
 
     if (result != null) {
-      context.read<NotesBloc>().add(
+      notesBloc.add(
         AddNote(
           title: result['title']!,
           content: result['content']!,
@@ -126,13 +127,14 @@ class _NotesScreenContent extends StatelessWidget {
   }
 
   void _showEditNoteDialog(BuildContext context, Note note) async {
+    final notesBloc = context.read<NotesBloc>();
     final result = await showDialog<Map<String, String>>(
       context: context,
-      builder: (context) => NoteDialog(note: note),
+      builder: (dialogContext) => NoteDialog(note: note),
     );
 
     if (result != null) {
-      context.read<NotesBloc>().add(
+      notesBloc.add(
         UpdateNote(
           id: note.id,
           title: result['title']!,
@@ -143,21 +145,22 @@ class _NotesScreenContent extends StatelessWidget {
   }
 
   void _showDeleteConfirmation(BuildContext context, Note note) {
+    final notesBloc = context.read<NotesBloc>();
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text('Delete Note'),
         content: Text('Delete "${note.title.isEmpty ? 'Untitled' : note.title}"?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(dialogContext).pop(),
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
               print('Delete button pressed for note: ${note.id}');
-              Navigator.of(context).pop();
-              context.read<NotesBloc>().add(DeleteNote(id: note.id));
+              Navigator.of(dialogContext).pop();
+              notesBloc.add(DeleteNote(id: note.id));
             },
             child: const Text('Delete'),
           ),
