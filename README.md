@@ -1,16 +1,75 @@
-# notes_app
+# Notes App
 
-A new Flutter project.
+A Flutter notes app with Firebase authentication and Firestore database.
 
-## Getting Started
+## Architecture
 
-This project is a starting point for a Flutter application.
+```
+UI (Screens) → BLoC (State Management) → Repository → Firebase
+```
 
-A few resources to get you started if this is your first Flutter project:
+## Quick Start
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+1. **Setup**
+   ```bash
+   git clone <repo>
+   cd notes_app
+   flutter pub get
+   ```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+2. **Firebase Setup**
+   - Create Firebase project
+   - Enable Authentication (Email/Password)
+   - Create Firestore database
+   - Add `google-services.json` to `android/app/`
+
+3. **Run**
+   ```bash
+   flutter run
+   ```
+
+## Build Commands
+
+```bash
+# Development
+flutter run
+
+# Production
+flutter build apk --release
+flutter build appbundle --release
+flutter build ios --release
+flutter build web --release
+```
+
+## Project Structure
+
+```
+lib/
+├── main.dart
+├── blocs/          # State management
+├── models/         # Data models
+├── repositories/   # Firebase operations
+├── screens/        # UI screens
+└── widgets/        # Reusable components
+```
+
+## Troubleshooting
+
+**Firebase Web Issues:**
+```bash
+flutter clean
+flutter pub get
+```
+
+**Android Build Issues:**
+```bash
+flutter clean
+cd android && ./gradlew clean && cd ..
+flutter run
+```
+
+## Dependencies
+
+- `flutter_bloc` - State management
+- `firebase_auth` - Authentication
+- `cloud_firestore` - Database
