@@ -142,12 +142,18 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     if (currentState is NotesLoaded) {
       emit(NoteOperationLoading(notes: currentState.notes));
       try {
+        print('Deleting note with ID: ${event.id}');
         await _notesRepository.deleteNote(event.id);
+        print('Note deleted successfully');
         final updatedNotes = await _notesRepository.fetchNotes();
+        print('Fetched ${updatedNotes.length} notes after deletion');
         emit(NotesLoaded(notes: updatedNotes));
       } catch (e) {
+        print('Error deleting note: $e');
         emit(NotesError(message: e.toString()));
       }
+    } else {
+      print('Current state is not NotesLoaded: ${currentState.runtimeType}');
     }
   }
 } 

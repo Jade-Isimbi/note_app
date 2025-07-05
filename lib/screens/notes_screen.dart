@@ -155,6 +155,7 @@ class _NotesScreenContent extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
+              print('Delete button pressed for note: ${note.id}');
               Navigator.of(context).pop();
               context.read<NotesBloc>().add(DeleteNote(id: note.id));
             },

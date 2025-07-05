@@ -58,8 +58,13 @@ class NotesRepository {
   // Delete a note
   Future<void> deleteNote(String id) async {
     try {
+      print('Repository: Deleting note with ID: $id');
+      print('Repository: User ID: $_userId');
+      print('Repository: Collection path: users/$_userId/notes/$id');
       await _notesCollection.doc(id).delete();
+      print('Repository: Note deleted successfully');
     } catch (e) {
+      print('Repository: Error deleting note: $e');
       throw Exception('Failed to delete note: $e');
     }
   }
