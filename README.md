@@ -12,7 +12,7 @@ UI (Screens) → BLoC (State Management) → Repository → Firebase
 
 1. **Setup**
    ```bash
-   git clone <repo>
+   git clone note_app
    cd notes_app
    flutter pub get
    ```
